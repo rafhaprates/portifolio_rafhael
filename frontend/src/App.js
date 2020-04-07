@@ -1,26 +1,52 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react'
+import './app.scss'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Header from './widgets/Header'
+import Presentation from './widgets/Presentation'
+import ContactShelf from './widgets/ContactShelf'
+import PageContent from './widgets/PageContent'
+
+const isMobileDevide = () => {
+	return window.innerWidth >= 920 ? true : false
 }
 
-export default App;
+const App = () => {
+	const [activeMenu, setActiveMenu] = useState(isMobileDevide())
+	const [activePage, setActivePage] = useState(false)
+
+	useEffect(() => {
+		if (window.location.pathname !== '/') {
+			setActiveMenu(true)
+			setActivePage(true)
+		}
+	}, [])
+
+	return(
+		<div className="app">
+			<section className="content">
+				<Presentation
+					name="Rafhael Prates"
+				/>
+
+				<ContactShelf />
+			</section>
+
+			<Header
+				showLogo={ activePage }
+				activeMenu={ activeMenu }
+				activePage={ (activePage = true) => { setActivePage(activePage)} }
+				toggleMenu={ () => setActiveMenu(!activeMenu) }
+			/>
+			{
+				activePage &&
+				<PageContent
+					active={ activePage }
+					back={() => {setActivePage(false)}}
+					menuOpened={ activeMenu }
+				/>
+			}
+		</div>
+	)
+}
+
+export default App
